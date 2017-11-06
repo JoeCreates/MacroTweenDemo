@@ -4,6 +4,7 @@ import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.util.FlxColor;
 import flixel.tweens.FlxEase;
+import macrotween.Ease;
 
 import macrotween.Cue;
 import macrotween.Timeline;
@@ -25,7 +26,7 @@ class PlayState extends FlxState {
 		add(test);
 		
 		timeline = new Timeline();
-		var tween:Tween = Tween.tween(0, 1, [test.x => 500], FlxEase.linear);
+		var tween:Tween = Tween.tween(0, 1, [test.x => 500], Ease.linear);
 		
 		timeline.add(tween);
 		
