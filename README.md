@@ -1,2 +1,3 @@
 # MacroTweenDemo
-Demo of the MacroTween library
+
+Demo of the MacroTween library using HaxeFlixel.
