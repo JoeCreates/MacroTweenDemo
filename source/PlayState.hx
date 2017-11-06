@@ -31,10 +31,10 @@ class PlayState extends FlxState {
 		timeline.add(tween);
 		
 		tween.onUpdate(0.5);
-		Sure.sure(test.x == 250); // Should evaluate to 250
 	}
 
 	override public function update(elapsed:Float):Void {
 		super.update(elapsed);
+		timeline.step(elapsed);
 	}
 }
