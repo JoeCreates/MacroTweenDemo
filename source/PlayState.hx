@@ -1,5 +1,7 @@
 package;
 
+import flixel.text.FlxText;
+import flixel.tweens.FlxTween.FlxTweenManager;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.util.FlxColor;
@@ -22,18 +24,34 @@ class PlayState extends FlxState {
 	private var reversed:Bool;
 	private var time:Float;
 	
+	var flxTweeners:FlxTweenManager = new FlxTweenManager();
+	var flixelTweens:Bool = true;
+	var text:FlxText;
+	
 	private function init():Void {
 		test = new FlxSprite(100, 100);
 		test.makeGraphic(100, 100, FlxColor.RED);
 		add(test);
 		
 		tlBegin = 0;
-		tlEnd = 1;
+		tlEnd = 10;
 		time = 0;
 		
+		text = new FlxText(20, 40, 0, "Flixel", 24);
+		add(text);
+		
+		var fps = new lycan.system.FpsText();
+		add(fps);
+		
 		timeline = new Timeline();
-		var tween:Tween = Tween.tween(tlBegin, tlEnd, [test.x => 500], Ease.quadInOut);
-		timeline.add(tween);
+		timeline.currentTime = 0.1;
+		
+		for (i in 0...10000) {
+			var spr = new FlxSprite();
+			timeline.add(Tween.tween(tlBegin, tlEnd, [spr.x => 500], Ease.quadInOut));
+			flxTweeners.tween(spr, {x: 500}, tlEnd, {ease: FlxEase.quadInOut});
+			//add(spr);
+		}
 		
 		reversed = false;
 	}
@@ -43,14 +61,23 @@ class PlayState extends FlxState {
 		init();
 	}
 
-	override public function update(elapsed:Float):Void {
-		super.update(elapsed);
+	override public function update(dt:Float):Void {
+		super.update(dt);
 		
 		if (FlxG.keys.justPressed.R) {
 			reversed = !reversed;
 		}
 		
-		time += reversed ? -elapsed : elapsed;
-		timeline.stepTo(time);
+		if (FlxG.keys.justPressed.SPACE) {
+			flixelTweens = !flixelTweens;
+			text.text = flixelTweens? "Flixel" : "MacroTween";
+			
+		}
+		
+		if (flixelTweens) {
+			flxTweeners.update(dt);
+		} else {
+			timeline.step(dt);
+		}
 	}
 }
