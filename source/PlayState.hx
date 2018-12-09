@@ -1,11 +1,13 @@
 package;
 
+import demo.EasingGraphsDemo;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween.FlxTweenManager;
+import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
 import macrotween.Ease;
 import macrotween.Timeline;
@@ -17,6 +19,8 @@ class PlayState extends FlxState {
 	
 	private var reversed:Bool;
 	private var time:Float;
+	
+	private var graphsDemoButton:FlxButton;
 	
 	var flxTweeners:FlxTweenManager = new FlxTweenManager();
 	var flixelTweens:Bool = true;
@@ -46,6 +50,11 @@ class PlayState extends FlxState {
 			timeline.add(Tween.tween([spr.x => 500], duration, start, Ease.quadInOut));
 			flxTweeners.tween(spr, {x: 500}, duration, {ease: FlxEase.quadInOut});
 		}
+		
+		graphsDemoButton = new FlxButton(FlxG.width / 2, FlxG.height / 2, "Graphs Demo", ()-> {
+			openSubState(new EasingGraphsDemo());
+		});
+		add(graphsDemoButton);
 		
 		reversed = false;
 	}
