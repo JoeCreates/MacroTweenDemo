@@ -23,8 +23,8 @@ class TweenGraph extends FlxSpriteGroup {
 	public var point:FlxSprite;
 	public var trailPoint:FlxSprite;
 
-	public var graphX:Float;
-	public var graphY:Float;
+	public var graphX:Float = 0;
+	public var graphY:Float = 0;
 
 	public function new(description:String, ease:Float->Float) {
 		super();
@@ -36,10 +36,6 @@ class TweenGraph extends FlxSpriteGroup {
 		box.drawRect(box.x, box.y, box.width, box.height, FlxColor.TRANSPARENT, { thickness: 2, color: FlxColor.BLACK });
 		add(box);
 
-		var text = new FlxText(0, 0, 0, description, 8);
-		text.color = FlxColor.GRAY;
-		add(text);
-
 		point = new FlxSprite();
 		point.makeGraphic(6, 6, FlxColor.TRANSPARENT);
 		point.drawCircle(3, 3, 3, FlxColor.RED);
@@ -49,10 +45,10 @@ class TweenGraph extends FlxSpriteGroup {
 		trailPoint.makeGraphic(2, 2, FlxColor.BLUE);
 		add(trailPoint);
 
+		var text = new FlxText(0, 0, 0, description, 8);
+		text.color = FlxColor.GRAY;
+		add(text);
 		text.setPosition(width / 2 - text.width / 2, height / 2 - text.height / 2);
-
-		graphX = 0;
-		graphY = 0;
 	}
 
 	override public function update(dt:Float):Void {
@@ -60,7 +56,7 @@ class TweenGraph extends FlxSpriteGroup {
 
 		point.x = graphX + x - point.width / 2;
 		point.y = graphY + y - point.height / 2;
-
+		
 		trailPoint.x = graphX + x - trailPoint.width / 2;
 		trailPoint.y = graphY + y - trailPoint.height / 2;
 	}
@@ -90,6 +86,10 @@ class EasingGraphsDemo extends LycanState {
 		trailArea = new FlxTrailArea(0, 0, FlxG.width, FlxG.height, 0.95, 1);
 		userControlled = false;
 		reversed = false;
+		
+		inline function addTween(ease, description) {
+			graphs.push(new TweenGraph(description, ease));
+		};
 
 		addTween(Ease.quadIn, "Ease.quadIn");
 		addTween(Ease.quadOut, "Ease.quadOut");
@@ -187,11 +187,7 @@ class EasingGraphsDemo extends LycanState {
 		});
 
 		Lib.current.stage.addEventListener(MouseEvent.MOUSE_WHEEL, function(e:MouseEvent):Void {
-			if (e.delta > 0) {
-				rateMultiplier += 0.1;
-			} else if (e.delta < 0) {
-				rateMultiplier -= 0.1;
-			}
+			rateMultiplier += e.delta > 0 ? 0.1 : -0.1;
 		});
 	}
 
@@ -208,13 +204,7 @@ class EasingGraphsDemo extends LycanState {
 			}
 			timeline.step(reversed ? -dt * rateMultiplier : dt * rateMultiplier);
 		} else {
-			var v = Math.min(1, Math.max(0, (FlxG.mouse.x / FlxG.width)));
-			timeline.stepTo(v);
+			timeline.stepTo(Math.min(1, Math.max(0, (FlxG.mouse.x / FlxG.width))));
 		}
-	}
-
-	private inline function addTween(ease:Float->Float, description:String):Void {
-		var graph = new TweenGraph(description, ease);
-		graphs.push(graph);
 	}
 }
