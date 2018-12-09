@@ -164,10 +164,10 @@ class EasingGraphsDemo extends LycanState {
 		addTween(Ease.bounceInOut, "bounceInOut");
 		addTween(Ease.bounceOutIn, "bounceOutIn");
 
-		addTween(Ease.elasticIn, "elasticIn(1, 0.4)");
-		addTween(Ease.elasticOut, "elasticOut(1, 0.4)");
-		addTween(Ease.elasticInOut, "elasticInOut(1, 0.4)");
-		addTween(Ease.elasticOutIn, "elasticOutIn(1, 0.4)");
+		addTween(Ease.elasticIn, "elasticIn(2, 1)");
+		addTween(Ease.elasticOut, "elasticOut(1, 4)");
+		addTween(Ease.elasticInOut, "elasticInOut(2, 1)");
+		addTween(Ease.elasticOutIn, "elasticOutIn(1, 4)");
 
 		addTween(Ease.hermite.bind(_, 0.2, 0.6, 0.2), "hermite(_, 0.2, 0.6, 0.2)");
 		addTween(Ease.hermite.bind(_, 0.4, 0.2, 0.4), "hermite(_, 0.4, 0.2, 0.4)");
