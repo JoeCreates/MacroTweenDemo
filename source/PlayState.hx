@@ -1,26 +1,20 @@
 package;
 
-import flixel.text.FlxText;
-import flixel.tweens.FlxTween.FlxTweenManager;
+import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
-import flixel.util.FlxColor;
+import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
-import flixel.FlxG;
-import flixel.input.keyboard.FlxKey;
-
+import flixel.tweens.FlxTween.FlxTweenManager;
+import flixel.util.FlxColor;
 import macrotween.Ease;
 import macrotween.Timeline;
 import macrotween.Tween;
-import macrotween.Tween.Tweener;
-import macrotween.TimelineItem;
 
 class PlayState extends FlxState {
 	private var test:FlxSprite;
 	private var timeline:Timeline;
 	
-	private var tlBegin:Float;
-	private var tlEnd:Float;
 	private var reversed:Bool;
 	private var time:Float;
 	
@@ -33,8 +27,6 @@ class PlayState extends FlxState {
 		test.makeGraphic(100, 100, FlxColor.RED);
 		add(test);
 		
-		tlBegin = 0;
-		tlEnd = 10;
 		time = 0;
 		
 		text = new FlxText(20, 40, 0, "Flixel", 24);
@@ -46,11 +38,13 @@ class PlayState extends FlxState {
 		timeline = new Timeline();
 		timeline.currentTime = 0.1;
 		
+		var start:Float = 0;
+		var duration:Float = 10;
+		
 		for (i in 0...10000) {
 			var spr = new FlxSprite();
-			timeline.add(Tween.tween(tlBegin, tlEnd, [spr.x => 500], Ease.quadInOut));
-			flxTweeners.tween(spr, {x: 500}, tlEnd, {ease: FlxEase.quadInOut});
-			//add(spr);
+			timeline.add(Tween.tween([spr.x => 500], duration, start, Ease.quadInOut));
+			flxTweeners.tween(spr, {x: 500}, duration, {ease: FlxEase.quadInOut});
 		}
 		
 		reversed = false;
@@ -71,7 +65,6 @@ class PlayState extends FlxState {
 		if (FlxG.keys.justPressed.SPACE) {
 			flixelTweens = !flixelTweens;
 			text.text = flixelTweens? "Flixel" : "MacroTween";
-			
 		}
 		
 		if (flixelTweens) {
