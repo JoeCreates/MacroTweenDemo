@@ -22,6 +22,7 @@ class TweenGraph extends FlxSpriteGroup {
 	public var box:FlxSprite;
 	public var point:FlxSprite;
 	public var trailPoint:FlxSprite;
+	public var valueText:FlxText;
 
 	public var graphX:Float = 0;
 	public var graphY:Float = 0;
@@ -32,7 +33,7 @@ class TweenGraph extends FlxSpriteGroup {
 		this.description = description;
 		this.ease = ease;
 
-		box = new FlxSprite().makeGraphic(Std.int(FlxG.width / EasingGraphsDemo.TWEENS_PER_ROW - EasingGraphsDemo.ITEM_SPACING * 2), Std.int(FlxG.height / 11 - EasingGraphsDemo.ITEM_SPACING * 2), FlxColor.WHITE);
+		box = new FlxSprite().makeGraphic(Std.int(FlxG.width / EasingGraphsDemo.tweensPerRow - EasingGraphsDemo.itemSpacing * 2), Std.int(FlxG.height / 11 - EasingGraphsDemo.itemSpacing * 2), FlxColor.WHITE);
 		box.drawRect(box.x, box.y, box.width, box.height, FlxColor.TRANSPARENT, { thickness: 2, color: FlxColor.BLACK });
 		add(box);
 
@@ -49,6 +50,10 @@ class TweenGraph extends FlxSpriteGroup {
 		text.color = FlxColor.GRAY;
 		add(text);
 		text.setPosition(width / 2 - text.width / 2, height / 2 - text.height / 2);
+		
+		valueText = new FlxText(0, 0, 0, "", 8);
+		valueText.color = FlxColor.GRAY;
+		add(valueText);
 	}
 
 	override public function update(dt:Float):Void {
@@ -59,12 +64,30 @@ class TweenGraph extends FlxSpriteGroup {
 		
 		trailPoint.x = graphX + x - trailPoint.width / 2;
 		trailPoint.y = graphY + y - trailPoint.height / 2;
+		
+		valueText.text = roundFloat(1.0 - (graphY / box.height), 2);
+		valueText.y = graphY + y - valueText.height / 2;
+	}
+	
+	private static function roundFloat(n:Float, prec:Int):String {
+		n = Math.round(n * Math.pow(10, prec));
+		var str:String = '' + n;
+		var len:Int = str.length;
+		if(len <= prec) {
+			while(len < prec) {
+				str = '0' + str;
+				len++;
+			}
+			return '0.' + str;
+		} else {
+			return str.substr(0, str.length - prec) + '.' + str.substr(str.length - prec);
+		}
 	}
 }
 
 class EasingGraphsDemo extends LycanState {
-	public static inline var TWEENS_PER_ROW:Int = 4;
-	public static inline var ITEM_SPACING:Int = 4;
+	public static inline var tweensPerRow:Int = 4;
+	public static inline var itemSpacing:Int = 4;
 
 	public var rateMultiplier:Float = 1;
 
@@ -91,80 +114,80 @@ class EasingGraphsDemo extends LycanState {
 			graphs.push(new TweenGraph(description, ease));
 		};
 
-		addTween(Ease.quadIn, "Ease.quadIn");
-		addTween(Ease.quadOut, "Ease.quadOut");
-		addTween(Ease.quadInOut, "Ease.quadInOut");
-		addTween(Ease.quadOutIn, "Ease.quadOutIn");
+		addTween(Ease.quadIn, "quadIn");
+		addTween(Ease.quadOut, "quadOut");
+		addTween(Ease.quadInOut, "quadInOut");
+		addTween(Ease.quadOutIn, "quadOutIn");
 
-		addTween(Ease.cubicIn, "Ease.cubicIn");
-		addTween(Ease.cubicOut, "Ease.cubicOut");
-		addTween(Ease.cubicInOut, "Ease.cubicInOut");
-		addTween(Ease.cubicOutIn, "Ease.cubicOutIn");
+		addTween(Ease.cubicIn, "cubicIn");
+		addTween(Ease.cubicOut, "cubicOut");
+		addTween(Ease.cubicInOut, "cubicInOut");
+		addTween(Ease.cubicOutIn, "cubicOutIn");
 
-		addTween(Ease.quartIn, "Ease.quartIn");
-		addTween(Ease.quartOut, "Ease.quartOut");
-		addTween(Ease.quartInOut, "Ease.quartInOut");
-		addTween(Ease.quartOutIn, "Ease.quartOutIn");
+		addTween(Ease.quartIn, "quartIn");
+		addTween(Ease.quartOut, "quartOut");
+		addTween(Ease.quartInOut, "quartInOut");
+		addTween(Ease.quartOutIn, "quartOutIn");
 
-		addTween(Ease.quintIn, "Ease.quintIn");
-		addTween(Ease.quintOut, "Ease.quintOut");
-		addTween(Ease.quintInOut, "Ease.quintInOut");
-		addTween(Ease.quintOutIn, "Ease.quintOutIN");
+		addTween(Ease.quintIn, "quintIn");
+		addTween(Ease.quintOut, "quintOut");
+		addTween(Ease.quintInOut, "quintInOut");
+		addTween(Ease.quintOutIn, "quintOutIn");
 
-		addTween(Ease.sineIn, "Ease.sineIn");
-		addTween(Ease.sineOut, "Ease.sineOut");
-		addTween(Ease.sineInOut, "Ease.sineInOut");
-		addTween(Ease.sineOutIn, "Ease.sineOutIn");
+		addTween(Ease.sineIn, "sineIn");
+		addTween(Ease.sineOut, "sineOut");
+		addTween(Ease.sineInOut, "sineInOut");
+		addTween(Ease.sineOutIn, "sineOutIn");
 
-		addTween(Ease.expoIn, "Ease.expoIn");
-		addTween(Ease.expoOut, "Ease.expoOut");
-		addTween(Ease.expoInOut, "Ease.expoInOut");
-		addTween(Ease.expoOutIn, "Ease.expoOutIn");
+		addTween(Ease.expoIn, "expoIn");
+		addTween(Ease.expoOut, "expoOut");
+		addTween(Ease.expoInOut, "expoInOut");
+		addTween(Ease.expoOutIn, "expoOutIn");
 
-		addTween(Ease.circIn, "Ease.circIn");
-		addTween(Ease.circOut, "Ease.circOut");
-		addTween(Ease.circInOut, "Ease.circInOut");
-		addTween(Ease.circOutIn, "Ease.circOutIn");
+		addTween(Ease.circIn, "circIn");
+		addTween(Ease.circOut, "circOut");
+		addTween(Ease.circInOut, "circInOut");
+		addTween(Ease.circOutIn, "circOutIn");
 
-		addTween(Ease.atanIn, "Ease.atanIn");
-		addTween(Ease.atanOut, "Ease.atanOut");
-		addTween(Ease.atanInOut, "Ease.atanInOut");
-		addTween(Ease.linear, "Ease.linear");
+		addTween(Ease.atanIn, "atanIn");
+		addTween(Ease.atanOut, "atanOut");
+		addTween(Ease.atanInOut, "atanInOut");
+		addTween(Ease.linear, "linear");
 
-		addTween(Ease.backIn, "Ease.backIn");
-		addTween(Ease.backOut, "Ease.backOut");
-		addTween(Ease.backInOut, "Ease.backInOut");
-		addTween(Ease.backOutIn, "Ease.backOutIn");
+		addTween(Ease.backIn, "backIn");
+		addTween(Ease.backOut, "backOut");
+		addTween(Ease.backInOut, "backInOut");
+		addTween(Ease.backOutIn, "backOutIn");
 
-		addTween(Ease.bounceIn, "Ease.bounceIn");
-		addTween(Ease.bounceOut, "Ease.bounceOut");
-		addTween(Ease.bounceInOut, "Ease.bounceInOut");
-		addTween(Ease.bounceOutIn, "Ease.bounceOutIn");
+		addTween(Ease.bounceIn, "bounceIn");
+		addTween(Ease.bounceOut, "bounceOut");
+		addTween(Ease.bounceInOut, "bounceInOut");
+		addTween(Ease.bounceOutIn, "bounceOutIn");
 
-		addTween(Ease.elasticIn, "Ease.elasticIn(2, 1)");
-		addTween(Ease.elasticOut, "Ease.elasticOut(1, 4)");
-		addTween(Ease.elasticInOut, "Ease.elasticInOut(2, 1)");
-		addTween(Ease.elasticOutIn, "Ease.elasticOutIn(1, 4)");
+		addTween(Ease.elasticIn, "elasticIn(1, 0.4)");
+		addTween(Ease.elasticOut, "elasticOut(1, 0.4)");
+		addTween(Ease.elasticInOut, "elasticInOut(1, 0.4)");
+		addTween(Ease.elasticOutIn, "elasticOutIn(1, 0.4)");
 
-		addTween(Ease.hermite.bind(_, 0.2, 0.6, 0.2), "Ease.hermite(_, 0.2, 0.6, 0.2)");
-		addTween(Ease.hermite.bind(_, 0.4, 0.2, 0.4), "Ease.hermite(_, 0.4, 0.2, 0.4)");
-		addTween(Ease.hermite.bind(_, 0.5, 0.3, 0.2), "Ease.hermite(_, 0.5, 0.3, 0.2)");
-		addTween(Ease.hermite.bind(_, 0.2, 0.3, 0.5), "Ease.hermite(_, 0.2, 0.3, 0.5)");
+		addTween(Ease.hermite.bind(_, 0.2, 0.6, 0.2), "hermite(_, 0.2, 0.6, 0.2)");
+		addTween(Ease.hermite.bind(_, 0.4, 0.2, 0.4), "hermite(_, 0.4, 0.2, 0.4)");
+		addTween(Ease.hermite.bind(_, 0.5, 0.3, 0.2), "hermite(_, 0.5, 0.3, 0.2)");
+		addTween(Ease.hermite.bind(_, 0.2, 0.3, 0.5), "hermite(_, 0.2, 0.3, 0.5)");
 
 		var i:Int = 0;
 		var x:Float = 0;
 		var y:Float = 0;
 		for (graph in graphs) {
-			timeline.tween(graph.graphY => graph.height, 1, 0, graph.ease);
+			timeline.tween(graph.graphY => graph.height...0, 1, 0, graph.ease);
 			timeline.tween(graph.graphX => graph.width, 1, 0, Ease.linear);
 
 			i++;
 			graph.x = x;
-			x += graph.width + ITEM_SPACING;
+			x += graph.width + itemSpacing;
 			graph.y = y;
-			if (i % EasingGraphsDemo.TWEENS_PER_ROW == 0) {
+			if (i % EasingGraphsDemo.tweensPerRow == 0) {
 				x = 0;
-				y += graph.height + ITEM_SPACING;
+				y += graph.height + itemSpacing;
 			}
 			graphGroup.add(graph);
 			trailArea.add(graph.trailPoint);
@@ -181,11 +204,9 @@ class EasingGraphsDemo extends LycanState {
 		Lib.current.stage.addEventListener(MouseEvent.CLICK, function(e:MouseEvent):Void {
 			reversed = !reversed;
 		});
-
 		Lib.current.stage.addEventListener(MouseEvent.RIGHT_CLICK, function(e:MouseEvent):Void {
 			userControlled = !userControlled;
 		});
-
 		Lib.current.stage.addEventListener(MouseEvent.MOUSE_WHEEL, function(e:MouseEvent):Void {
 			rateMultiplier += e.delta > 0 ? 0.1 : -0.1;
 		});
@@ -193,18 +214,14 @@ class EasingGraphsDemo extends LycanState {
 
 	override public function update(dt:Float):Void {
 		super.update(dt);
-
-		if (!userControlled) {
-			if (timeline.currentTime >= 1) {
-				timeline.reset();
-				timeline.currentTime = 0;
-			} else if (timeline.currentTime <= 0) {
-				timeline.reset();
-				timeline.currentTime = 1;
+		
+		if (userControlled) {
+			timeline.stepTo(Math.min(1, Math.max(0, (FlxG.mouse.x / FlxG.width))));
+		} else {
+			if (!timeline.isCurrentTimeInBounds()) {
+				timeline.currentTime = timeline.currentTime > 0.5 ? 0 : 1;
 			}
 			timeline.step(reversed ? -dt * rateMultiplier : dt * rateMultiplier);
-		} else {
-			timeline.stepTo(Math.min(1, Math.max(0, (FlxG.mouse.x / FlxG.width))));
 		}
 	}
 }
