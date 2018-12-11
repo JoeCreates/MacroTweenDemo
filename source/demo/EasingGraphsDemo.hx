@@ -12,8 +12,24 @@ import macrotween.Timeline;
 import macrotween.Tween;
 import openfl.Lib;
 import openfl.events.MouseEvent;
+import flixel.tweens.FlxTween;
 
 using flixel.util.FlxSpriteUtil;
+
+class VibrationParticle extends FlxSprite {
+	public function new(height:Float) {
+		super();
+		makeGraphic(1, Std.int(height), FlxColor.GRAY, false);
+	}
+	
+	public function spawn(x:Float, endX:Float, delay:Float, lifeTime:Float = 1) {
+		// TODO convert to timeline when we support this use
+		this.x = x;
+		this.alpha = 1;
+		FlxTween.tween(this, {x: endX, alpha: 0}, lifeTime, {startDelay: delay, ease: Ease.quadOut, onComplete: function(_) {kill();}});
+	}
+	
+}
 
 class TweenGraph extends FlxSpriteGroup {
 	public var description:String;
@@ -26,6 +42,8 @@ class TweenGraph extends FlxSpriteGroup {
 
 	public var graphX:Float = 0;
 	public var graphY:Float = 0;
+	
+	public var vibrationParticles:FlxTypedSpriteGroup<VibrationParticle>;
 
 	public function new(description:String, ease:Float->Float) {
 		super();
@@ -36,7 +54,10 @@ class TweenGraph extends FlxSpriteGroup {
 		box = new FlxSprite().makeGraphic(Std.int(FlxG.width / EasingGraphsDemo.tweensPerRow - EasingGraphsDemo.itemSpacing * 2), Std.int(FlxG.height / 11 - EasingGraphsDemo.itemSpacing * 2), FlxColor.WHITE);
 		box.drawRect(box.x, box.y, box.width, box.height, FlxColor.TRANSPARENT, { thickness: 2, color: FlxColor.BLACK });
 		add(box);
-
+		
+		vibrationParticles = new FlxTypedSpriteGroup<VibrationParticle>();
+		add(vibrationParticles);
+		
 		point = new FlxSprite();
 		point.makeGraphic(6, 6, FlxColor.TRANSPARENT);
 		point.drawCircle(3, 3, 3, FlxColor.RED);
@@ -55,7 +76,27 @@ class TweenGraph extends FlxSpriteGroup {
 		valueText.color = FlxColor.GRAY;
 		add(valueText);
 	}
-
+	
+	public function spawnVibration(right:Bool) {
+		var startX:Float;
+		var endX:Float;
+		var time:Float = 0.4;
+		
+		if (right) {
+			startX = this.x + this.width;
+			endX = this.x + this.width * 0.9;
+		} else {
+			startX = this.x;
+			endX = this.x + this.width * 0.1;
+		}
+		
+		for (i in 0...3) {
+			var p = vibrationParticles.recycle(null, function():VibrationParticle {return new VibrationParticle(box.height);});
+			p.spawn(startX, endX, i * 0.8, time);
+			p.y = box.y;
+		}
+	}
+	
 	override public function update(dt:Float):Void {
 		super.update(dt);
 
@@ -179,8 +220,11 @@ class EasingGraphsDemo extends LycanState {
 		var y:Float = 0;
 		for (graph in graphs) {
 			timeline.tween(graph.graphY => graph.height...0, 1, 0, graph.ease);
-			timeline.tween(graph.graphX => graph.width, 1, 0, Ease.linear);
-
+			var tween = Tween.tween(graph.graphX => 0...graph.width, 1, 0, Ease.linear);
+			tween.onEndSignal.add(function(rev) {graph.spawnVibration(true);});
+			tween.onStartSignal.add(function(rev) {graph.spawnVibration(false);});
+			timeline.add(tween);
+			
 			i++;
 			graph.x = x;
 			x += graph.width + itemSpacing;
