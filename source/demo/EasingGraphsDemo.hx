@@ -51,7 +51,7 @@ class TweenGraph extends FlxSpriteGroup {
 		this.description = description;
 		this.ease = ease;
 
-		box = new FlxSprite().makeGraphic(Std.int(FlxG.width / EasingGraphsDemo.tweensPerRow - EasingGraphsDemo.itemSpacing * 2), Std.int(FlxG.height / 11 - EasingGraphsDemo.itemSpacing * 2), FlxColor.WHITE);
+		box = new FlxSprite().makeGraphic(Std.int(FlxG.width / EasingGraphsDemo.tweensPerRow - EasingGraphsDemo.itemSpacing * 2), Std.int(FlxG.height / 12 - EasingGraphsDemo.itemSpacing * 2), FlxColor.WHITE);
 		box.drawRect(box.x, box.y, box.width, box.height, FlxColor.TRANSPARENT, { thickness: 2, color: FlxColor.BLACK });
 		add(box);
 		
@@ -214,6 +214,11 @@ class EasingGraphsDemo extends LycanState {
 		addTween(Ease.hermite.bind(_, 0.4, 0.2, 0.4), "hermite(_, 0.4, 0.2, 0.4)");
 		addTween(Ease.hermite.bind(_, 0.5, 0.3, 0.2), "hermite(_, 0.5, 0.3, 0.2)");
 		addTween(Ease.hermite.bind(_, 0.2, 0.3, 0.5), "hermite(_, 0.2, 0.3, 0.5)");
+		
+		addTween(Ease.piecewiseLinear.bind(_, [ 0.0, 0.9, 0.0, 0.9, 0.0 ]), "piecewise(0.0, 0.9, 0.0, 0.9, 0.0)");
+		addTween(Ease.piecewiseLinear.bind(_, [ 0.9, 0.1, 0.9, 0.1, 0.9 ]), "piecewise(0.9, 0.1, 0.9, 0.1, 0.9)");
+		addTween(Ease.piecewiseLinear.bind(_, [ 0.5, 0.2, 0.8, 0.2, 0.5 ]), "piecewise(0.5, 0.2, 0.8, 0.2, 0.5)");
+		addTween(Ease.piecewiseLinear.bind(_, [ 0.1, 0.5, 0.6, 0.5, 0.1 ]), "piecewise(0.1, 0.5, 0.6, 0.5, 0.1)");
 
 		var i:Int = 0;
 		var x:Float = 0;
