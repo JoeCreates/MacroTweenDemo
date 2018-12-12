@@ -92,7 +92,7 @@ class TweenGraph extends FlxSpriteGroup {
 		
 		for (i in 0...3) {
 			var p = vibrationParticles.recycle(null, function():VibrationParticle {return new VibrationParticle(box.height);});
-			p.spawn(startX, endX, i * 0.8, time);
+			p.spawn(startX, endX, i * 0.08, time);
 			p.y = box.y;
 		}
 	}
@@ -148,7 +148,7 @@ class EasingGraphsDemo extends LycanState {
 		graphs = new Array<TweenGraph>();
 		graphGroup = new FlxSpriteGroup();
 		trailArea = new FlxTrailArea(0, 0, FlxG.width, FlxG.height, 0.95, 1);
-		userControlled = false;
+		userControlled = true;
 		reversed = false;
 		
 		inline function addTween(ease, description) {
@@ -265,12 +265,12 @@ class EasingGraphsDemo extends LycanState {
 		super.update(dt);
 		
 		if (userControlled) {
-			timeline.stepTo(Math.min(1, Math.max(0, (FlxG.mouse.x / FlxG.width))));
+			timeline.stepTo(Math.min(1, Math.max(0, (FlxG.mouse.x * 4 / FlxG.width) % 1)));
 		} else {
 			if (!timeline.isCurrentTimeInBounds()) {
 				timeline.currentTime = timeline.currentTime > 0.5 ? 0 : 1;
 			}
-			timeline.step(reversed ? -dt * rateMultiplier : dt * rateMultiplier);
+			timeline.step(reversed ? -dt * rateMultiplier : dt * rateMultiplier, true);
 		}
 	}
 }
