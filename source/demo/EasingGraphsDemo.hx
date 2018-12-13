@@ -5,14 +5,15 @@ import flixel.FlxSprite;
 import flixel.addons.effects.FlxTrailArea;
 import flixel.group.FlxSpriteGroup;
 import flixel.text.FlxText;
+import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
+import haxe.Constraints.Function;
 import lycan.states.LycanState;
 import macrotween.Ease;
 import macrotween.Timeline;
 import macrotween.Tween;
 import openfl.Lib;
 import openfl.events.MouseEvent;
-import flixel.tweens.FlxTween;
 
 using flixel.util.FlxSpriteUtil;
 
@@ -28,16 +29,30 @@ class VibrationParticle extends FlxSprite {
 		this.alpha = 1;
 		FlxTween.tween(this, {x: endX, alpha: 0}, lifeTime, {startDelay: delay, ease: Ease.quadOut, onComplete: function(_) {kill();}});
 	}
-	
 }
 
 class TweenGraph extends FlxSpriteGroup {
 	public var description:String;
-	public var ease:Float->Float;
+	public var descriptionLabel(default, set):String;
+	
+	public var ease(get, set):Float->Float;
+	
+	// The easing functions, encoded signatures and their arguments
+	private var easeArgs:String;
+	private var easeArgValues:Array<Float>;
+	private var ease1:Float->Float;
+	private var ease2:Float->Float->Float;
+	private var ease3:Float->Float->Float->Float;
+	private var ease4:Float->Float->Float->Float->Float;
+	private var ease5:Float->Float->Float->Float->Float->Float;
+	private var easeArr:Float->Array<Float>->Float;
+	
+	public var tween:Tween = null;
 
 	public var box:FlxSprite;
 	public var point:FlxSprite;
 	public var trailPoint:FlxSprite;
+	public var descriptionText:FlxText;
 	public var valueText:FlxText;
 
 	public var graphX:Float = 0;
@@ -45,10 +60,12 @@ class TweenGraph extends FlxSpriteGroup {
 	
 	public var vibrationParticles:FlxTypedSpriteGroup<VibrationParticle>;
 
-	public function new(description:String, ease:Float->Float) {
+	public function new(description:String, ease:Dynamic, args:String, argValues:Array<Float> = null) {
 		super();
 
 		this.description = description;
+		this.easeArgs = args;
+		this.easeArgValues = argValues;
 		this.ease = ease;
 
 		box = new FlxSprite().makeGraphic(Std.int(FlxG.width / EasingGraphsDemo.tweensPerRow - EasingGraphsDemo.itemSpacing * 2), Std.int(FlxG.height / 12 - EasingGraphsDemo.itemSpacing * 2), FlxColor.WHITE);
@@ -67,10 +84,11 @@ class TweenGraph extends FlxSpriteGroup {
 		trailPoint.makeGraphic(2, 2, FlxColor.BLUE);
 		add(trailPoint);
 
-		var text = new FlxText(0, 0, 0, description, 8);
-		text.color = FlxColor.GRAY;
-		add(text);
-		text.setPosition(width / 2 - text.width / 2, height / 2 - text.height / 2);
+		descriptionText = new FlxText(0, 0, 0, "", 8);
+		descriptionText.color = FlxColor.GRAY;
+		descriptionText.setPosition(width / 2 - descriptionText.width / 2, height / 2 - descriptionText.height / 2);
+		descriptionLabel = description;
+		add(descriptionText);
 		
 		valueText = new FlxText(0, 0, 0, "", 8);
 		valueText.color = FlxColor.GRAY;
@@ -99,6 +117,20 @@ class TweenGraph extends FlxSpriteGroup {
 	
 	override public function update(dt:Float):Void {
 		super.update(dt);
+		
+		if (FlxG.mouse.overlaps(this) && easeArgValues != null && easeArgValues.length > 0 && FlxG.mouse.wheel != 0) {
+
+			var multiplier:Float = FlxG.mouse.wheel > 0 ? 0.9 : 1.1;
+			var additive:Float = FlxG.mouse.wheel > 0 ? -0.01 : 0.01;
+			
+			var mouseX = FlxG.mouse.x;
+			var fractionAcrossGraph = Math.min(1, Math.max(0, (mouseX - box.x) / box.width));
+			var whichParameter:Int = Math.floor(fractionAcrossGraph * easeArgValues.length);
+			this.easeArgValues[whichParameter] = Std.parseFloat(roundFloat(this.easeArgValues[whichParameter] * multiplier + additive, 2));
+			
+			descriptionLabel = description; // Update label text
+			tween.ease = ease; // Rebind with updated parameters
+		}
 
 		point.x = graphX + x - point.width / 2;
 		point.y = graphY + y - point.height / 2;
@@ -124,6 +156,56 @@ class TweenGraph extends FlxSpriteGroup {
 			return str.substr(0, str.length - prec) + '.' + str.substr(str.length - prec);
 		}
 	}
+	
+	private function get_ease():Float->Float {
+		switch(easeArgs) {
+			case "f":
+				return ease1;
+			case "ff":
+				return ease2.bind(_, easeArgValues[0]);
+			case "fff":
+				return ease3.bind(_, easeArgValues[0], easeArgValues[1]);
+			case "ffff":
+				return ease4.bind(_, easeArgValues[0], easeArgValues[1], easeArgValues[2]);
+			case "fffff":
+				return ease5.bind(_, easeArgValues[0], easeArgValues[1], easeArgValues[2], easeArgValues[3]);
+			case "a":
+				return easeArr.bind(_, easeArgValues);
+			default:
+				throw "Failed to resolve easing function";
+		}
+	}
+	
+	private function set_ease(ease:Dynamic):Dynamic {
+		switch(easeArgs.length) {
+			case 1:
+				switch(easeArgs) {
+					case "f":
+						ease1 = ease;
+					case "a":
+						easeArr = ease;
+					default:
+						throw "Unhandled easing function type";
+				}
+			case 2:
+				ease2 = ease;
+			case 3:
+				ease3 = ease;
+			case 4:
+				ease4 = ease;
+			case 5:
+				ease5 = ease;
+			default:
+				throw "Bad number of easing arguments";
+		}
+		return null;
+	}
+	
+	private function set_descriptionLabel(s:String):String {
+		this.descriptionText.text = s + (easeArgValues == null ? "" : " " + Std.string(easeArgValues));
+		descriptionText.setPosition(x + width / 2 - descriptionText.width / 2, descriptionText.y);
+		return descriptionText.text;
+	}
 }
 
 class EasingGraphsDemo extends LycanState {
@@ -139,6 +221,10 @@ class EasingGraphsDemo extends LycanState {
 	private var userControlled:Bool;
 	private var reversed:Bool;
 
+	inline private function addTween<T:Function>(ease:T, description:String, args:String = "f", defaults:Array<Float> = null):Void {
+		graphs.push(new TweenGraph(description, ease, args, defaults));
+	}
+	
 	override public function create():Void {
 		super.create();
 
@@ -150,10 +236,6 @@ class EasingGraphsDemo extends LycanState {
 		trailArea = new FlxTrailArea(0, 0, FlxG.width, FlxG.height, 0.95, 1);
 		userControlled = true;
 		reversed = false;
-		
-		inline function addTween(ease, description) {
-			graphs.push(new TweenGraph(description, ease));
-		};
 
 		addTween(Ease.quadIn, "quadIn");
 		addTween(Ease.quadOut, "quadOut");
@@ -190,45 +272,49 @@ class EasingGraphsDemo extends LycanState {
 		addTween(Ease.circInOut, "circInOut");
 		addTween(Ease.circOutIn, "circOutIn");
 
-		addTween(Ease.atanIn, "atanIn");
-		addTween(Ease.atanOut, "atanOut");
-		addTween(Ease.atanInOut, "atanInOut");
+		addTween(Ease.atanInAdv, "atanIn", "ff", [ 15 ]);
+		addTween(Ease.atanOutAdv, "atanOut", "ff", [ 15 ]);
+		addTween(Ease.atanInOutAdv, "atanInOut", "ff", [ 15 ]);
 		addTween(Ease.linear, "linear");
 
-		addTween(Ease.backIn, "backIn");
-		addTween(Ease.backOut, "backOut");
-		addTween(Ease.backInOut, "backInOut");
-		addTween(Ease.backOutIn, "backOutIn");
+		addTween(Ease.backInAdv, "backIn", "ff", [ 1.70158 ]);
+		addTween(Ease.backOutAdv, "backOut", "ff", [ 1.70158 ]);
+		addTween(Ease.backInOutAdv, "backInOut", "ff", [ 1.70158 ]);
+		addTween(Ease.backOutInAdv, "backOutIn", "ff", [ 1.70158 ]);
 
-		addTween(Ease.bounceIn, "bounceIn");
-		addTween(Ease.bounceOut, "bounceOut");
-		addTween(Ease.bounceInOut, "bounceInOut");
-		addTween(Ease.bounceOutIn, "bounceOutIn");
+		addTween(Ease.bounceInAdv, "bounceIn", "ff", [ 1.70158 ]);
+		addTween(Ease.bounceOutAdv, "bounceOut", "ff", [ 1.70158 ]);
+		addTween(Ease.bounceInOutAdv, "bounceInOut", "ff", [ 1.70158 ]);
+		addTween(Ease.bounceOutInAdv, "bounceOutIn", "ff", [ 1.70158 ]);
 
-		addTween(Ease.elasticIn, "elasticIn(1, 0.4)");
-		addTween(Ease.elasticOut, "elasticOut(1, 0.4)");
-		addTween(Ease.elasticInOut, "elasticInOut(1, 0.4)");
-		addTween(Ease.elasticOutIn, "elasticOutIn(1, 0.4)");
+		addTween(Ease.elasticInAdv, "elasticIn", "fff", [ 1, 0.4 ]);
+		addTween(Ease.elasticOutAdv, "elasticOut", "fff", [ 1, 0.4 ]);
+		addTween(Ease.elasticInOutAdv, "elasticInOut", "fff", [ 1, 0.4 ]);
+		addTween(Ease.elasticOutInAdv, "elasticOutIn", "fff", [ 1, 0.4 ]);
 
-		addTween(Ease.hermite.bind(_, 0.2, 0.6, 0.2), "hermite(_, 0.2, 0.6, 0.2)");
-		addTween(Ease.hermite.bind(_, 0.4, 0.2, 0.4), "hermite(_, 0.4, 0.2, 0.4)");
-		addTween(Ease.hermite.bind(_, 0.5, 0.3, 0.2), "hermite(_, 0.5, 0.3, 0.2)");
-		addTween(Ease.hermite.bind(_, 0.2, 0.3, 0.5), "hermite(_, 0.2, 0.3, 0.5)");
-		
-		addTween(Ease.piecewiseLinear.bind(_, [ 0.0, 0.9, 0.0, 0.9, 0.0 ]), "piecewise(0.0, 0.9, 0.0, 0.9, 0.0)");
-		addTween(Ease.piecewiseLinear.bind(_, [ 0.9, 0.1, 0.9, 0.1, 0.9 ]), "piecewise(0.9, 0.1, 0.9, 0.1, 0.9)");
-		addTween(Ease.piecewiseLinear.bind(_, [ 0.5, 0.2, 0.8, 0.2, 0.5 ]), "piecewise(0.5, 0.2, 0.8, 0.2, 0.5)");
-		addTween(Ease.piecewiseLinear.bind(_, [ 0.1, 0.5, 0.6, 0.5, 0.1 ]), "piecewise(0.1, 0.5, 0.6, 0.5, 0.1)");
+		addTween(Ease.hermite, "hermite", "ffff", [ 0.2, 0.6, 0.2 ]);
+		addTween(Ease.hermite, "hermite", "ffff", [ 0.4, 0.2, 0.4 ]);
+		addTween(Ease.hermite, "hermite", "ffff", [ 0.5, 0.3, 0.2 ]);
+		addTween(Ease.hermite, "hermite", "ffff", [ 0.2, 0.3, 0.5 ]);
+
+		addTween(Ease.piecewiseLinear, "piecewise", "a", [ 0.0, 0.9, 0.0, 0.9, 0.0 ]);
+		addTween(Ease.piecewiseLinear, "piecewise", "a", [ 0.9, 0.1, 0.9, 0.1, 0.9 ]);
+		addTween(Ease.piecewiseLinear, "piecewise", "a", [ 0.5, 0.2, 0.8, 0.2, 0.5 ]);
+		addTween(Ease.piecewiseLinear, "piecewise", "a", [ 0, 1, 0, 1 ]);
 
 		var i:Int = 0;
 		var x:Float = 0;
 		var y:Float = 0;
 		for (graph in graphs) {
-			timeline.tween(graph.graphY => graph.height...0, 1, 0, graph.ease);
-			var tween = Tween.tween(graph.graphX => 0...graph.width, 1, 0, Ease.linear);
-			tween.onEndSignal.add(function(rev) {graph.spawnVibration(true);});
-			tween.onStartSignal.add(function(rev) {graph.spawnVibration(false);});
-			timeline.add(tween);
+			var yTween = Tween.tween(graph.graphY => graph.height...0, 1, 0, graph.ease);
+			timeline.add(yTween);
+			
+			var xTween = Tween.tween(graph.graphX => 0...graph.width, 1, 0, Ease.linear);
+			xTween.onEndSignal.add(function(rev) {graph.spawnVibration(true);});
+			xTween.onStartSignal.add(function(rev) {graph.spawnVibration(false);});
+			timeline.add(xTween);
+			
+			graph.tween = yTween;
 			
 			i++;
 			graph.x = x;
@@ -256,9 +342,9 @@ class EasingGraphsDemo extends LycanState {
 		Lib.current.stage.addEventListener(MouseEvent.RIGHT_CLICK, function(e:MouseEvent):Void {
 			userControlled = !userControlled;
 		});
-		Lib.current.stage.addEventListener(MouseEvent.MOUSE_WHEEL, function(e:MouseEvent):Void {
-			rateMultiplier += e.delta > 0 ? 0.1 : -0.1;
-		});
+		//Lib.current.stage.addEventListener(MouseEvent.MOUSE_WHEEL, function(e:MouseEvent):Void {
+		//	rateMultiplier += e.delta > 0 ? 0.1 : -0.1;
+		//});
 	}
 
 	override public function update(dt:Float):Void {
