@@ -14,6 +14,7 @@ import macrotween.Timeline;
 import macrotween.Tween;
 import openfl.Lib;
 import openfl.events.MouseEvent;
+import util.Util;
 
 using flixel.util.FlxSpriteUtil;
 
@@ -222,6 +223,7 @@ class EasingGraphsDemo extends LycanState {
 	private var reversed:Bool;
 
 	inline private function addTween<T:Function>(ease:T, description:String, args:String = "f", defaults:Array<Float> = null):Void {
+		// TODO replace args with Util.getFunctionSignature(ease); if such a thing is possible?
 		graphs.push(new TweenGraph(description, ease, args, defaults));
 	}
 	
