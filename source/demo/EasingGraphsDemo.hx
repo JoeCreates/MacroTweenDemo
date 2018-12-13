@@ -118,18 +118,18 @@ class TweenGraph extends FlxSpriteGroup {
 	override public function update(dt:Float):Void {
 		super.update(dt);
 		
-		if (FlxG.mouse.overlaps(this) && easeArgValues != null && easeArgValues.length > 0 && FlxG.mouse.wheel != 0) {
-
+		if (FlxG.mouse.wheel != 0 && easeArgValues != null && easeArgValues.length > 0 && FlxG.mouse.overlaps(this)) {
+			
 			var multiplier:Float = FlxG.mouse.wheel > 0 ? 0.9 : 1.1;
 			var additive:Float = FlxG.mouse.wheel > 0 ? -0.01 : 0.01;
 			
-			var mouseX = FlxG.mouse.x;
+			var mouseX:Int = FlxG.mouse.x;
 			var fractionAcrossGraph = Math.min(1, Math.max(0, (mouseX - box.x) / box.width));
 			var whichParameter:Int = Math.floor(fractionAcrossGraph * easeArgValues.length);
 			this.easeArgValues[whichParameter] = Std.parseFloat(roundFloat(this.easeArgValues[whichParameter] * multiplier + additive, 2));
 			
 			descriptionLabel = description; // Update label text
-			tween.ease = ease; // Rebind with updated parameters
+			tween.ease = ease; // Rebind easing function with updated parameters
 		}
 
 		point.x = graphX + x - point.width / 2;
