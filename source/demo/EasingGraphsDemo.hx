@@ -120,8 +120,8 @@ class TweenGraph extends FlxSpriteGroup {
 		
 		if (FlxG.mouse.wheel != 0 && easeArgValues != null && easeArgValues.length > 0 && FlxG.mouse.overlaps(this)) {
 			
-			var multiplier:Float = FlxG.mouse.wheel > 0 ? 0.9 : 1.1;
-			var additive:Float = FlxG.mouse.wheel > 0 ? -0.01 : 0.01;
+			var multiplier:Float = FlxG.mouse.wheel > 0 ? 1.1 : 0.9;
+			var additive:Float = FlxG.mouse.wheel > 0 ? 0.01 : -0.01;
 			
 			var mouseX:Int = FlxG.mouse.x;
 			var fractionAcrossGraph = Math.min(1, Math.max(0, (mouseX - box.x) / box.width));
@@ -140,21 +140,6 @@ class TweenGraph extends FlxSpriteGroup {
 		
 		valueText.text = roundFloat(1.0 - (graphY / box.height), 2);
 		valueText.y = graphY + y - valueText.height / 2;
-	}
-	
-	private static function roundFloat(n:Float, prec:Int):String {
-		n = Math.round(n * Math.pow(10, prec));
-		var str:String = '' + n;
-		var len:Int = str.length;
-		if(len <= prec) {
-			while(len < prec) {
-				str = '0' + str;
-				len++;
-			}
-			return '0.' + str;
-		} else {
-			return str.substr(0, str.length - prec) + '.' + str.substr(str.length - prec);
-		}
 	}
 	
 	private function get_ease():Float->Float {
@@ -205,6 +190,21 @@ class TweenGraph extends FlxSpriteGroup {
 		this.descriptionText.text = s + (easeArgValues == null ? "" : " " + Std.string(easeArgValues));
 		descriptionText.setPosition(x + width / 2 - descriptionText.width / 2, descriptionText.y);
 		return descriptionText.text;
+	}
+	
+	private static function roundFloat(n:Float, prec:Int):String {
+		n = Math.round(n * Math.pow(10, prec));
+		var str:String = '' + n;
+		var len:Int = str.length;
+		if(len <= prec) {
+			while(len < prec) {
+				str = '0' + str;
+				len++;
+			}
+			return '0.' + str;
+		} else {
+			return str.substr(0, str.length - prec) + '.' + str.substr(str.length - prec);
+		}
 	}
 }
 

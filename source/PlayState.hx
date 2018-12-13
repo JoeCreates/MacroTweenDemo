@@ -26,6 +26,15 @@ class PlayState extends FlxState {
 	var flixelTweens:Bool = true;
 	var text:FlxText;
 	
+	public function new() {
+		super();
+		
+		// Only use system cursor in browser, otherwise you see both
+		#if html5
+		FlxG.mouse.useSystemCursor = true;
+		#end
+	}
+	
 	private function init():Void {
 		test = new FlxSprite(100, 100);
 		test.makeGraphic(100, 100, FlxColor.RED);
