@@ -10,6 +10,7 @@ import haxe.macro.Type;
  */
 @:enum abstract TypeMapping(String) from (String) {
     var FLOAT = "f";
+    var ARRAY = "a";
 }
 
 class Util
@@ -22,8 +23,6 @@ class Util
 	 */
 	public macro static function getFunctionSignature(f:ExprOf<Function>):ExprOf<String> {
 		var type:haxe.macro.Type = Context.typeof(f);
-		
-		// TODO could this macro work with generics e.g. a <T:Function> parameter that's passed in?
 		
 		var params:Array<Dynamic> = type.getParameters();
 		
@@ -50,6 +49,14 @@ class Util
 							signature += TypeMapping.FLOAT;
 						case _:
 							throw "Unhandled abstract function parameter type: " + underlyingTypeName;
+					}
+				case TInst(t, params):
+					var stringifedTypeName = Std.string(t);
+					switch(stringifedTypeName) {
+						case "Array":
+							signature += TypeMapping.ARRAY;
+						case _:
+							throw "Unhandled class instance type: " + stringifedTypeName;
 					}
 				default:
 					throw "Unhandled function parameter type: " + arg;

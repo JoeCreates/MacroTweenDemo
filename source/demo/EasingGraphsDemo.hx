@@ -14,7 +14,6 @@ import macrotween.Timeline;
 import macrotween.Tween;
 import openfl.Lib;
 import openfl.events.MouseEvent;
-import util.Util;
 
 using flixel.util.FlxSpriteUtil;
 
@@ -155,7 +154,7 @@ class TweenGraph extends FlxSpriteGroup {
 				return ease4.bind(_, easeArgValues[0], easeArgValues[1], easeArgValues[2]);
 			case "fffff":
 				return ease5.bind(_, easeArgValues[0], easeArgValues[1], easeArgValues[2], easeArgValues[3]);
-			case "a":
+			case "fa":
 				return easeArr.bind(_, easeArgValues);
 			default:
 				throw "Failed to resolve easing function";
@@ -165,16 +164,16 @@ class TweenGraph extends FlxSpriteGroup {
 	private function set_ease(ease:Dynamic):Dynamic {
 		switch(easeArgs.length) {
 			case 1:
+				ease1 = ease;
+			case 2:
 				switch(easeArgs) {
-					case "f":
-						ease1 = ease;
-					case "a":
+					case "ff":
+						ease2 = ease;
+					case "fa":
 						easeArr = ease;
 					default:
 						throw "Unhandled easing function type";
 				}
-			case 2:
-				ease2 = ease;
 			case 3:
 				ease3 = ease;
 			case 4:
@@ -223,7 +222,6 @@ class EasingGraphsDemo extends LycanState {
 	private var reversed:Bool;
 
 	inline private function addTween<T:Function>(ease:T, description:String, args:String = "f", defaults:Array<Float> = null):Void {
-		// TODO replace args with Util.getFunctionSignature(ease); if such a thing is possible?
 		graphs.push(new TweenGraph(description, ease, args, defaults));
 	}
 	
@@ -299,11 +297,11 @@ class EasingGraphsDemo extends LycanState {
 		addTween(Ease.hermite, "hermite", "ffff", [ 0.5, 0.3, 0.2 ]);
 		addTween(Ease.hermite, "hermite", "ffff", [ 0.2, 0.3, 0.5 ]);
 
-		addTween(Ease.piecewiseLinear, "piecewise", "a", [ 0.0, 0.9, 0.0, 0.9, 0.0 ]);
-		addTween(Ease.piecewiseLinear, "piecewise", "a", [ 0.9, 0.1, 0.9, 0.1, 0.9 ]);
-		addTween(Ease.piecewiseLinear, "piecewise", "a", [ 0.5, 0.2, 0.8, 0.2, 0.5 ]);
-		addTween(Ease.piecewiseLinear, "piecewise", "a", [ 0, 1, 0, 1 ]);
-
+		addTween(Ease.piecewiseLinear, "piecewise", "fa", [ 0.0, 0.9, 0.0, 0.9, 0.0 ]);
+		addTween(Ease.piecewiseLinear, "piecewise", "fa", [ 0.9, 0.1, 0.9, 0.1, 0.9 ]);
+		addTween(Ease.piecewiseLinear, "piecewise", "fa", [ 0.5, 0.2, 0.8, 0.2, 0.5 ]);
+		addTween(Ease.piecewiseLinear, "piecewise", "fa", [ 0, 1, 0, 1 ]);
+		
 		var i:Int = 0;
 		var x:Float = 0;
 		var y:Float = 0;
