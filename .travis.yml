@@ -6,7 +6,7 @@ os:
 
 # see haxe versions: http://haxe.org/website-content/downloads/versions.json
 haxe:
-  - "4.0.0-preview.5"
+  - "4.0.0-rc.2"
 
 install:
   # Install dependencies
@@ -31,5 +31,5 @@ deploy:
   github_token: $GITHUB_API_KEY
   # Only deploy for one of the Haxe builds
   on:
-    condition: "$TRAVIS_HAXE_VERSION = 4.0.0-preview.5"
+    condition: "$TRAVIS_HAXE_VERSION = 4.0.0-rc.2"
     branch: master
