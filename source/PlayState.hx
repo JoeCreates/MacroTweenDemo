@@ -66,6 +66,7 @@ class PlayState extends FlxState {
 		add(graphsDemoButton);
 		
 		reversed = false;
+		openSubState(new EasingGraphsDemo());
 	}
 	
 	override public function create():Void {

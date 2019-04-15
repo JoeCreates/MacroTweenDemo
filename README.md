@@ -7,9 +7,9 @@ A HaxeFlixel-based demo of the [MacroTween](https://github.com/JoeCreates/MacroT
 
 ## Usage
 
-The easing graphs example demonstrates a series of easing equations, each tweening a "time" variable on the x-axis to a value on the y-axis:
+The easing graphs example demonstrates a series of easing equations, each tweening a "time" variable on the x-axis to a value on the y-axis.
 
-[![Graphs Tween Demo](https://github.com/JoeCreates/MacroTweenDemo/blob/master/screenshots/graphs_demo.png?raw=true)](https://joecreates.github.io/MacroTweenDemo/index.html)
+[![Graphs Tween Demo](https://github.com/JoeCreates/MacroTweenDemo/blob/master/screenshots/graphs_demo.png?raw=true "MacroTween Graphs Demo Screenshot")](https://joecreates.github.io/MacroTweenDemo/index.html)
 
  * Left click flips the flow of time.
  * Right click switches between mouse-controlled and automatic tweening.
