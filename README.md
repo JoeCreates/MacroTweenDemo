@@ -7,13 +7,13 @@ A HaxeFlixel-based demo of the [MacroTween](https://github.com/JoeCreates/MacroT
 
 ## Usage
 
-The graphs example shown below demonstrates a series of easing equations, each tweening a "time" variable on the x-axis to a value on the y-axis:
+The easing graphs example demonstrates a series of easing equations, each tweening a "time" variable on the x-axis to a value on the y-axis:
 
 [![Graphs Tween Demo](https://github.com/JoeCreates/MacroTweenDemo/blob/master/screenshots/graphs_demo.png?raw=true)](https://joecreates.github.io/MacroTweenDemo/index.html)
 
- * Left click toggles the flow of time.
- * Right click toggles between mouse-controlled and automatic tweening.
- * Mousewheeling over the easing graphs that take parameters modifies the values of these parameters (scrolling on the left side of a graph tweens the first parameter, through to rightmost for the last parameter).
+ * Left click flips the flow of time.
+ * Right click switches between mouse-controlled and automatic tweening.
+ * Mousewheel on an easing graph that takes parameters modifies the value of a parameter (scrolling on the left of a graph tweens the first parameter, through to rightmost for the last parameter).
  
 ## Notes
  * Got an idea or request? Open an issue on [GitHub](https://github.com/JoeCreates/MacroTweenDemo) or contact [Joe](https://twitter.com/JoeCreates) and [Sam](https://twitter.com/Sam_Twidale).
