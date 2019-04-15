@@ -13,23 +13,15 @@ install:
   - haxelib install lime
   - haxelib install openfl
   - haxelib install flixel
-  # Grab the latest macrotween from GitHub
-  - mkdir macrotween_repo_clone
-  - pushd macrotween_repo_clone
-  - git clone --branch=master https://github.com/JoeCreates/MacroTween .
-   # Package the haxelib
-  - chmod +x ./package_haxelib.sh
-  - ./package_haxelib.sh
-  # Install haxelib locally
-  - haxelib install MacroTween.zip
-  - popd
+  - haxelib install flixel-addons
+  - haxelib git lycan https://github.com/JoeCreates/Lycan
+  - haxelib git MacroTween https://github.com/JoeCreates/MacroTween
   - haxelib list
 
 script:
   - haxelib run openfl build "Project.xml" flash
   - haxelib run openfl build "Project.xml" html5
   #- haxelib run openfl build "Project.xml" linux
-  - ls -a
 
 # Deploy generated demo to GitHub Pages
 deploy:
