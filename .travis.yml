@@ -10,6 +10,7 @@ haxe:
 
 install:
   # Install dependencies
+  - haxelib install lime
   - haxelib install openfl
   - haxelib install flixel
   # Grab the latest macrotween from GitHub
