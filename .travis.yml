@@ -10,6 +10,7 @@ haxe:
 
 install:
   # Install dependencies
+  - haxelib install openfl
   - haxelib install flixel
   # Grab the latest macrotween from GitHub
   - mkdir macrotween_repo_clone
@@ -26,7 +27,7 @@ install:
 script:
   - haxelib run openfl build "Project.xml" flash
   - haxelib run openfl build "Project.xml" html5
-  - haxelib run openfl build "Project.xml" linux
+  #- haxelib run openfl build "Project.xml" linux
   - ls -a
 
 # Deploy generated demo to GitHub Pages
