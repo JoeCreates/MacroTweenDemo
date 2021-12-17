@@ -2,13 +2,14 @@ package demo;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.FlxState;
 import flixel.addons.effects.FlxTrailArea;
 import flixel.group.FlxSpriteGroup;
+import flixel.FlxSubState;
 import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import haxe.Constraints.Function;
-import lycan.states.LycanState;
 import macrotween.Ease;
 import macrotween.Timeline;
 import macrotween.Tween;
@@ -208,7 +209,7 @@ class TweenGraph extends FlxSpriteGroup {
 	}
 }
 
-class EasingGraphsDemo extends LycanState {
+class EasingGraphsDemo extends FlxSubState {
 	public static inline var tweensPerRow:Int = 4;
 	public static inline var itemSpacing:Int = 4;
 

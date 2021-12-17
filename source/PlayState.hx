@@ -45,9 +45,6 @@ class PlayState extends FlxState {
 		text = new FlxText(20, 40, 0, "Flixel", 24);
 		add(text);
 		
-		var fps = new lycan.system.FpsText();
-		add(fps);
-		
 		timeline = new Timeline();
 		timeline.currentTime = 0.1;
 		

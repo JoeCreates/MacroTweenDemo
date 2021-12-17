@@ -1,7 +1,7 @@
 # MacroTweenDemo
 
-[![Travis Build Status](https://img.shields.io/travis/JoeCreates/MacroTweenDemo.svg?style=flat-square)](https://travis-ci.org/JoeCreates/MacroTweenDemo)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/JoeCreates/MacroTweenDemo/blob/master/LICENSE)
+[![Build Status Badge](https://ci.appveyor.com/api/projects/status/github/Tw1ddle/MacroTweenDemo)](https://ci.appveyor.com/project/Tw1ddle/MacroTweenDemo)
 
 A HaxeFlixel-based demo of the [MacroTween](https://github.com/JoeCreates/MacroTween) library, a Haxe library for concise tweening and timelines. Run it in your [browser](https://joecreates.github.io/MacroTweenDemo/index.html).
 
@@ -9,7 +9,7 @@ A HaxeFlixel-based demo of the [MacroTween](https://github.com/JoeCreates/MacroT
 
 The easing graphs example demonstrates a series of easing equations, each tweening a "time" variable on the x-axis to a value on the y-axis.
 
-[![Graphs Tween Demo](https://github.com/JoeCreates/MacroTweenDemo/blob/master/screenshots/graphs_demo.png?raw=true "MacroTween Graphs Demo Screenshot")](https://joecreates.github.io/MacroTweenDemo/index.html)
+[![Graphs Tween Demo](https://github.com/JoeCreates/MacroTweenDemo/blob/master/screenshots/graphs_demo_animation.gif?raw=true "MacroTween Graphs Demo Screenshot")](https://joecreates.github.io/MacroTweenDemo/index.html)
 
  * Left click flips the flow of time.
  * Right click switches between mouse-controlled and automatic tweening.
